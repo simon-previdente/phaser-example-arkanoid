@@ -14,12 +14,15 @@
     "workshop"
   ],
   "author": "Pierre CHABILAND <pierre@casusludi.com>",
-  "contributors": [{
-    "name": "Alvin BERTHELOT",
-    "email": "contact@webyousoon.com"
-  }],
+  "contributors": [
+    {
+      "name": "Alvin BERTHELOT",
+      "email": "contact@webyousoon.com"
+    }
+  ],
   "license": "GPL-3.0",
   "devDependencies": {
+    "browser-sync": "^2.11.1",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "run-sequence": "^1.1.3"

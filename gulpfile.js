@@ -6,6 +6,8 @@
 var gulp = require('gulp');
 var del = require('del');
 var runSequence = require('run-sequence');
+var browserSync = require('browser-sync');
+var reload = browserSync.reload;
 
 var pkg = require('./package.json');
 
@@ -32,7 +34,8 @@ gulp.task('clean', function(cb) {
  */
 gulp.task('build-index', function() {
   return gulp.src(paths.index.src)
-    .pipe(gulp.dest(paths.index.dest));
+    .pipe(gulp.dest(paths.index.dest))
+    .pipe(reload({stream: true}));
 });
 
 /**
@@ -44,11 +47,34 @@ gulp.task('copy-assets', function() {
 });
 
 /**
+ * Launch dev server
+ */
+gulp.task('serve', function() {
+
+  browserSync({
+    server: {
+      baseDir: pkg.project.build
+    },
+    open: false,
+    reloadOnRestart: true
+  });
+
+  gulp.watch([paths.index.src], ['build-index']);
+
+});
+
+/**
+ * Build game
+ */
+gulp.task('build', ['build-index', 'copy-assets']);
+
+/**
  * DEFAULT
  */
 gulp.task('default', function() {
   runSequence(
     ['clean'],
-    ['build-index', 'copy-assets']
+    ['build'],
+    ['serve']
   );
 });
