@@ -19,8 +19,23 @@
     "email": "contact@webyousoon.com"
   }],
   "license": "GPL-3.0",
+  "devDependencies": {
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "run-sequence": "^1.1.3"
+  },
   "bugs": {
     "url": "https://github.com/alvinberthelot/phaser-example-arkanoid/issues"
   },
-  "homepage": "https://github.com/alvinberthelot/phaser-example-arkanoid#readme"
+  "homepage": "https://github.com/alvinberthelot/phaser-example-arkanoid#readme",
+  "project": {
+    "index": "/index.html",
+    "source": "./src",
+    "build": "./build",
+    "bundle": {
+      "main": "/game/index.js",
+      "dest": "/game/bundle.js",
+      "assets": "/game/assets"
+    }
+  }
 }
