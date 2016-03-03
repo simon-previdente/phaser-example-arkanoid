@@ -1,0 +1,26 @@
+{
+  "name": "phaser-example-arkanoid",
+  "version": "0.0.1",
+  "description": "Repository of a workshop to learn web game development with PhaserJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvinberthelot/phaser-example-arkanoid.git"
+  },
+  "keywords": [
+    "workshop"
+  ],
+  "author": "Pierre CHABILAND <pierre@casusludi.com>",
+  "contributors": [{
+    "name": "Alvin BERTHELOT",
+    "email": "contact@webyousoon.com"
+  }],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/alvinberthelot/phaser-example-arkanoid/issues"
+  },
+  "homepage": "https://github.com/alvinberthelot/phaser-example-arkanoid#readme"
+}
