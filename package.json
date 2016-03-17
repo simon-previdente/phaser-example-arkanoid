@@ -38,15 +38,5 @@
   "bugs": {
     "url": "https://github.com/alvinberthelot/phaser-example-arkanoid/issues"
   },
-  "homepage": "https://github.com/alvinberthelot/phaser-example-arkanoid#readme",
-  "project": {
-    "index": "/index.html",
-    "source": "./src",
-    "build": "./build",
-    "bundle": {
-      "main": "/game/index.js",
-      "dest": "/game/bundle.js",
-      "assets": "/game/assets"
-    }
-  }
+  "homepage": "https://github.com/alvinberthelot/phaser-example-arkanoid#readme"
 }

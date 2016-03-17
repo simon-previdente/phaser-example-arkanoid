@@ -17,19 +17,24 @@ var source = require('vinyl-source-stream');
 
 var pkg = require('./package.json');
 
+var sourceDir = './src';
+var buildDir = './build';
+
 var paths = {
+  source: sourceDir,
+  build: buildDir,
   index: {
-    src: pkg.project.source + pkg.project.index,
-    dest: pkg.project.build
+    src: sourceDir + '/index.html',
+    dest: buildDir
   },
   assets: {
-    src: pkg.project.source + pkg.project.bundle.assets,
-    dest: pkg.project.build + pkg.project.bundle.assets
+    src: sourceDir + '/game/assets',
+    dest: buildDir + '/game/assets'
   },
   js: {
-    index: pkg.project.source + '/game/index.js',
+    index: sourceDir + '/game/index.js',
     bundle: 'bundle-' + pkg.name + '.js',
-    dest: pkg.project.build
+    dest: buildDir
   }
 }
 
@@ -37,7 +42,7 @@ var paths = {
  * Clean build directory
  */
 gulp.task('clean', function(cb) {
-  return del([pkg.project.build + '/**/*']);
+  return del([paths.build + '/**/*']);
 });
 
 /**
@@ -86,7 +91,7 @@ gulp.task('serve', function() {
 
   browserSync({
     server: {
-      baseDir: pkg.project.build
+      baseDir: paths.build
     },
     open: false,
     reloadOnRestart: true
