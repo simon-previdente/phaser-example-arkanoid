@@ -4,6 +4,7 @@
  * Dependencies
  **/
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
