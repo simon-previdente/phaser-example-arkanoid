@@ -54,7 +54,7 @@ function _update() {
     bar.body.velocity.x = barSpeed * SCALE;
   }
 
-  game.physics.arcade.collide(bar, ball, null, null, this);
+  game.physics.arcade.collide(bar, ball, null, _reflect, this);
 }
 
 function _createBall(x, y) {
@@ -78,4 +78,20 @@ function _createBar(x, y) {
   bar.body.collideWorldBounds = true;
   bar.body.immovable = true;
   return bar;
+}
+
+function _reflect(bar, ball) {
+  if (ball.y > (bar.y + 5)) {
+    return true;
+  } else {
+    var rate = (1 - (ball.x + ball.width * 0.5 - bar.x ) / bar.width);
+    if(rate < 0.1) rate = 0.1;
+    if(rate > 0.9) rate = 0.9;
+    var angle = - Math.PI*rate;
+    ball.body.velocity.setTo(
+      Math.cos(angle) * ballSpeed,
+      Math.sin(angle) * ballSpeed
+    );
+    return false;
+  }
 }
