@@ -23,6 +23,8 @@ var game = new Phaser.Game(
   false
 );
 
+var ball = null;
+
 function _preload() {
   // console.log('💤 Preload game');
   game.load.image('ball','game/assets/ball.png');
@@ -33,10 +35,11 @@ function _create() {
 
   game.stage.backgroundColor = '#363343';
 
-  var ball = game.add.sprite(400, 200, 'ball');
+  ball = game.add.sprite(400, 200, 'ball');
   ball.scale.set(SCALE);
 }
 
 function _update() {
   // console.log('🔄 Update game');
+  ball.x += 2;
 }
