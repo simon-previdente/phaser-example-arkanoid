@@ -53,6 +53,8 @@ function _update() {
   } else if (cursor.right.isDown) {
     bar.body.velocity.x = barSpeed * SCALE;
   }
+
+  game.physics.arcade.collide(bar, ball, null, null, this);
 }
 
 function _createBall(x, y) {
@@ -61,7 +63,7 @@ function _createBall(x, y) {
   game.physics.enable(ball, Phaser.Physics.ARCADE);
   ball.body.collideWorldBounds = true;
   ball.body.bounce.set(1);
-  var angle = 0;
+  var angle = - 0.5 * Math.PI;
   ball.body.velocity.setTo(
     Math.cos(angle) * ballSpeed,
     Math.sin(angle) * ballSpeed
@@ -74,5 +76,6 @@ function _createBar(x, y) {
   bar.scale.set(SCALE);
   game.physics.enable(bar, Phaser.Physics.ARCADE);
   bar.body.collideWorldBounds = true;
+  bar.body.immovable = true;
   return bar;
 }
