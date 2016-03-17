@@ -37,6 +37,8 @@ function _create() {
 
   ball = game.add.sprite(400, 200, 'ball');
   ball.scale.set(SCALE);
+  game.physics.enable(ball, Phaser.Physics.ARCADE);
+  ball.body.collideWorldBounds = true;
 }
 
 function _update() {
