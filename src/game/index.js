@@ -25,10 +25,13 @@ var game = new Phaser.Game(
 
 var ball = null;
 var ballSpeed = 180;
+var bar = null;
+var barSpeed = 200;
 
 function _preload() {
   // console.log('💤 Preload game');
   game.load.image('ball','game/assets/ball.png');
+  game.load.image('bar','game/assets/bar.png');
 }
 
 function _create() {
@@ -37,10 +40,19 @@ function _create() {
   game.stage.backgroundColor = '#363343';
 
   ball = _createBall(400, 200);
+  bar = _createBar(100, 400);
+
+  cursor = game.input.keyboard.createCursorKeys();
 }
 
 function _update() {
   // console.log('🔄 Update game');
+  bar.body.velocity.x = 0;
+  if (cursor.left.isDown) {
+    bar.body.velocity.x = - barSpeed * SCALE;
+  } else if (cursor.right.isDown) {
+    bar.body.velocity.x = barSpeed * SCALE;
+  }
 }
 
 function _createBall(x, y) {
@@ -55,4 +67,12 @@ function _createBall(x, y) {
     Math.sin(angle) * ballSpeed
   );
   return ball;
+}
+
+function _createBar(x, y) {
+  var bar = game.add.sprite(x, y,'bar');
+  bar.scale.set(SCALE);
+  game.physics.enable(bar, Phaser.Physics.ARCADE);
+  bar.body.collideWorldBounds = true;
+  return bar;
 }
