@@ -24,6 +24,7 @@ var game = new Phaser.Game(
 );
 
 var ball = null;
+var ballSpeed = 180;
 
 function _preload() {
   // console.log('💤 Preload game');
@@ -39,9 +40,14 @@ function _create() {
   ball.scale.set(SCALE);
   game.physics.enable(ball, Phaser.Physics.ARCADE);
   ball.body.collideWorldBounds = true;
+  ball.body.bounce.set(1);
+  var angle = 0;
+  ball.body.velocity.setTo(
+    Math.cos(angle) * ballSpeed,
+    Math.sin(angle) * ballSpeed
+  );
 }
 
 function _update() {
   // console.log('🔄 Update game');
-  ball.x += 2;
 }
