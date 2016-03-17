@@ -36,7 +36,15 @@ function _create() {
 
   game.stage.backgroundColor = '#363343';
 
-  ball = game.add.sprite(400, 200, 'ball');
+  ball = _createBall(400, 200);
+}
+
+function _update() {
+  // console.log('🔄 Update game');
+}
+
+function _createBall(x, y) {
+  var ball = game.add.sprite(x, y, 'ball');
   ball.scale.set(SCALE);
   game.physics.enable(ball, Phaser.Physics.ARCADE);
   ball.body.collideWorldBounds = true;
@@ -46,8 +54,5 @@ function _create() {
     Math.cos(angle) * ballSpeed,
     Math.sin(angle) * ballSpeed
   );
-}
-
-function _update() {
-  // console.log('🔄 Update game');
+  return ball;
 }
