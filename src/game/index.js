@@ -29,6 +29,8 @@ function _preload() {
 
 function _create() {
   // console.log('✨ Create game');
+
+  game.stage.backgroundColor = '#363343';
 }
 
 function _update() {
