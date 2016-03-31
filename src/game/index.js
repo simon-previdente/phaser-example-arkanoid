@@ -30,8 +30,9 @@ var barSpeed = 200;
 
 function _preload() {
   // console.log('💤 Preload game');
-  game.load.image('ball','game/assets/ball.png');
-  game.load.image('bar','game/assets/bar.png');
+  game.load.image('ball', 'game/assets/ball.png');
+  game.load.image('bar', 'game/assets/bar.png');
+  game.load.image('brick', 'game/assets/brick01.png');
 }
 
 function _create() {
@@ -41,6 +42,7 @@ function _create() {
 
   ball = _createBall(400, 200);
   bar = _createBar(100, 400);
+  brick = _createBrick(200, 200);
 
   cursor = game.input.keyboard.createCursorKeys();
 }
@@ -55,6 +57,7 @@ function _update() {
   }
 
   game.physics.arcade.collide(bar, ball, null, _reflect, this);
+  game.physics.arcade.collide(ball, brick, null, null, this);
 }
 
 function _createBall(x, y) {
@@ -72,12 +75,20 @@ function _createBall(x, y) {
 }
 
 function _createBar(x, y) {
-  var bar = game.add.sprite(x, y,'bar');
+  var bar = game.add.sprite(x, y, 'bar');
   bar.scale.set(SCALE);
   game.physics.enable(bar, Phaser.Physics.ARCADE);
   bar.body.collideWorldBounds = true;
   bar.body.immovable = true;
   return bar;
+}
+
+function _createBrick(x, y) {
+  var brick = game.add.sprite(x, y, 'brick');
+  brick.scale.set(SCALE);
+  game.physics.enable(brick, Phaser.Physics.ARCADE);
+  brick.body.immovable = true;
+  return brick;
 }
 
 function _reflect(bar, ball) {
