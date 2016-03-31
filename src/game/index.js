@@ -57,7 +57,7 @@ function _update() {
   }
 
   game.physics.arcade.collide(bar, ball, null, _reflect, this);
-  game.physics.arcade.collide(ball, bricks, null, null, this);
+  game.physics.arcade.collide(ball, bricks, null, _breakBrick, this);
 }
 
 function _createBall(x, y) {
@@ -122,4 +122,9 @@ function _reflect(bar, ball) {
     );
     return false;
   }
+}
+
+function _breakBrick(ball, brick) {
+  brick.kill();
+  return true;
 }
