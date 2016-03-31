@@ -40,9 +40,9 @@ function _create() {
 
   game.stage.backgroundColor = '#363343';
 
-  ball = _createBall(400, 200);
+  ball = _createBall(400, 420);
   bar = _createBar(100, 400);
-  brick = _createBrick(200, 200);
+  bricks = _createBricks();
 
   cursor = game.input.keyboard.createCursorKeys();
 }
@@ -57,7 +57,7 @@ function _update() {
   }
 
   game.physics.arcade.collide(bar, ball, null, _reflect, this);
-  game.physics.arcade.collide(ball, brick, null, null, this);
+  game.physics.arcade.collide(ball, bricks, null, null, this);
 }
 
 function _createBall(x, y) {
@@ -83,8 +83,25 @@ function _createBar(x, y) {
   return bar;
 }
 
-function _createBrick(x, y) {
-  var brick = game.add.sprite(x, y, 'brick');
+function _createBricks() {
+  var bricks = game.add.group();
+  var brickImage = 'brick';
+  var widthBrick = game.cache.getImage(brickImage).width;
+  var heightBrick = game.cache.getImage(brickImage).height;
+  for (var i = 0; i < 10; i++) {
+    for (var j = 0; j < 6; j++) {
+      var brick = _createOneBrick(
+        widthBrick * SCALE * i,
+        heightBrick * SCALE * j,
+        brickImage);
+      bricks.add(brick);
+    }
+  }
+  return bricks;
+}
+
+function _createOneBrick(x, y, image) {
+  var brick = game.add.sprite(x, y, image);
   brick.scale.set(SCALE);
   game.physics.enable(brick, Phaser.Physics.ARCADE);
   brick.body.immovable = true;
