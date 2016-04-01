@@ -30,6 +30,12 @@ var barSpeed = 200;
 
 var spaceKey;
 
+var message;
+var style = {
+  font: '32px Arial',
+  fill: '#ffffff'
+};
+
 function _preload() {
   // console.log('💤 Preload game');
   game.load.image('ball', 'game/assets/ball.png');
@@ -54,7 +60,15 @@ function _create() {
   spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   spaceKey.onDown.add(function() {
     game.paused = !game.paused;
+    if (game.paused) {
+      message.text = 'Paused';
+    } else {
+      message.text = '';
+    }
   }, this);
+
+  message = game.add.text(game.width * 0.5, game.height * 0.5, 'Hello', style);
+  message.anchor.set(0.5);
 }
 
 function _update() {
