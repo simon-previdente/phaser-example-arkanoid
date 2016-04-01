@@ -38,11 +38,14 @@ WebFontConfig = {
 var stateLevel = false;
 var stateFont = false;
 var stateGameStarted = false;
+var stateGameOver = false;
 
 var ball = null;
 var ballSpeed = 180;
 var bar = null;
 var barSpeed = 200;
+var bricks;
+var brickCount;
 
 var spaceKey;
 
@@ -66,9 +69,11 @@ function _create() {
 
   game.stage.backgroundColor = '#363343';
 
+  game.physics.startSystem(Phaser.Physics.ARCADE);
+  game.physics.arcade.checkCollision.down = false;
+
   ball = _createBall(0, 0);
   bar = _createBar(0, 0);
-  bricks = _createBricks();
 
   _resetLevel();
 
@@ -80,6 +85,10 @@ function _create() {
 
 function _update() {
   // console.log('🔄 Update game');
+  if(stateGameOver) {
+    return;
+  }
+
   bar.body.velocity.x = 0;
   if (cursor.left.isDown) {
     bar.body.velocity.x = - barSpeed * SCALE;
@@ -104,6 +113,15 @@ function _resetLevel() {
   ball.body.velocity.setTo(0);
   // Flag level is ready
   stateLevel = true;
+  stateGameStarted = false;
+  stateGameOver = false;
+  if (stateFont) {
+    message.text = 'Again ?';
+  }
+  if(bricks) {
+    bricks.removeAll();
+  }
+  bricks = _createBricks();
 }
 
 function _createBall(x, y) {
@@ -112,6 +130,8 @@ function _createBall(x, y) {
   game.physics.enable(ball, Phaser.Physics.ARCADE);
   ball.body.collideWorldBounds = true;
   ball.body.bounce.set(1);
+  ball.checkWorldBounds = true;
+  ball.events.onOutOfBounds.add(_loseBall, this);
   return ball;
 }
 
@@ -143,6 +163,7 @@ function _createBricks() {
       bricks.add(brick);
     }
   }
+  brickCount = nbColumnBrick * nbRowBrick;
   return bricks;
 }
 
@@ -172,6 +193,10 @@ function _reflect(bar, ball) {
 
 function _breakBrick(ball, brick) {
   brick.kill();
+  brickCount--;
+  if (brickCount <= 0) {
+    _winGame();
+  }
   return true;
 }
 
@@ -184,7 +209,9 @@ function _createMessage() {
 }
 
 function _eventSpaceKey() {
-  if(stateGameStarted) {
+  if(stateGameOver) {
+    _resetLevel();
+  } else if(stateGameStarted) {
     game.paused = !game.paused;
     if(game.paused) {
       message.text = 'Paused';
@@ -204,5 +231,17 @@ function _launchBall() {
     Math.cos(angle) * ballSpeed,
     Math.sin(angle) * ballSpeed
   );
+}
+
+function _loseBall() {
+  stateGameOver = true;
+  ball.body.velocity.setTo(0);
+  message.text = 'You lose';
+}
+
+function _winGame() {
+  stateGameOver = true;
+  ball.body.velocity.setTo(0);
+  message.text = 'You win';
 }
 
