@@ -23,6 +23,22 @@ var game = new Phaser.Game(
   false
 );
 
+//  The Google WebFont Loader will look for this object, so create it before loading the script.
+WebFontConfig = {
+  //  'active' means all requested fonts have finished loading
+  //  We set a 1 second delay before calling 'createText'.
+  //  For some reason if we don't the browser cannot render the text the first time it's created.
+  active: function() { game.time.events.add(Phaser.Timer.SECOND, _createMessage, this); },
+  //  The Google Fonts we want to load (specify as many as you like in the array)
+  google: {
+    families: ['Pacifico', 'Cookie']
+  }
+};
+
+var stateLevel = false;
+var stateFont = false;
+var stateGameStarted = false;
+
 var ball = null;
 var ballSpeed = 180;
 var bar = null;
@@ -30,9 +46,9 @@ var barSpeed = 200;
 
 var spaceKey;
 
-var message;
+var message = null;
 var style = {
-  font: '32px Arial',
+  font: '32px Cookie',
   fill: '#ffffff'
 };
 
@@ -41,6 +57,8 @@ function _preload() {
   game.load.image('ball', 'game/assets/ball.png');
   game.load.image('bar', 'game/assets/bar.png');
   game.load.image('brick', 'game/assets/brick01.png');
+  //  Load the Google WebFont Loader script
+  game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 }
 
 function _create() {
@@ -56,19 +74,8 @@ function _create() {
 
   cursor = game.input.keyboard.createCursorKeys();
 
-  game.paused = true;
   spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-  spaceKey.onDown.add(function() {
-    game.paused = !game.paused;
-    if (game.paused) {
-      message.text = 'Paused';
-    } else {
-      message.text = '';
-    }
-  }, this);
-
-  message = game.add.text(game.width * 0.5, game.height * 0.5, 'Hello', style);
-  message.anchor.set(0.5);
+  spaceKey.onDown.add(_eventSpaceKey, this);
 }
 
 function _update() {
@@ -79,9 +86,12 @@ function _update() {
   } else if (cursor.right.isDown) {
     bar.body.velocity.x = barSpeed * SCALE;
   }
-
-  game.physics.arcade.collide(bar, ball, null, _reflect, this);
-  game.physics.arcade.collide(ball, bricks, null, _breakBrick, this);
+  if(stateGameStarted) {
+    game.physics.arcade.collide(bar, ball, null, _reflect, this);
+    game.physics.arcade.collide(ball, bricks, null, _breakBrick, this);
+  } else {
+    ball.x = bar.x + (bar.width - ball.width) * 0.5;
+  }
 }
 
 function _resetLevel() {
@@ -91,6 +101,9 @@ function _resetLevel() {
   // Reset ball
   ball.y = bar.y - ball.height;
   ball.x = bar.x + (bar.width - ball.width) * 0.5;
+  ball.body.velocity.setTo(0);
+  // Flag level is ready
+  stateLevel = true;
 }
 
 function _createBall(x, y) {
@@ -99,11 +112,6 @@ function _createBall(x, y) {
   game.physics.enable(ball, Phaser.Physics.ARCADE);
   ball.body.collideWorldBounds = true;
   ball.body.bounce.set(1);
-  var angle = - 0.5 * Math.PI;
-  ball.body.velocity.setTo(
-    Math.cos(angle) * ballSpeed,
-    Math.sin(angle) * ballSpeed
-  );
   return ball;
 }
 
@@ -166,3 +174,35 @@ function _breakBrick(ball, brick) {
   brick.kill();
   return true;
 }
+
+function _createMessage() {
+  message = game.add.text(game.width * 0.5, game.height * 0.5, 'Ready ?', style);
+  message.anchor.set(0.5);
+  // Flag font is ready
+  stateFont = true;
+  return true;
+}
+
+function _eventSpaceKey() {
+  if(stateGameStarted) {
+    game.paused = !game.paused;
+    if(game.paused) {
+      message.text = 'Paused';
+    } else {
+      message.text = '';
+    }
+  } else if(stateLevel && stateFont) {
+    stateGameStarted = true;
+    message.text = '';
+    _launchBall();
+  }
+}
+
+function _launchBall() {
+  var angle = - 0.5 * Math.PI;
+  ball.body.velocity.setTo(
+    Math.cos(angle) * ballSpeed,
+    Math.sin(angle) * ballSpeed
+  );
+}
+
