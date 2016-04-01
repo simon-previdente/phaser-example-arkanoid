@@ -60,6 +60,7 @@ function _preload() {
   game.load.image('ball', 'game/assets/ball.png');
   game.load.image('bar', 'game/assets/bar.png');
   game.load.image('brick', 'game/assets/brick01.png');
+  game.load.image('brick-dust','game/assets/brick-dust01.png');
   //  Load the Google WebFont Loader script
   game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 }
@@ -185,7 +186,7 @@ function _reflect(bar, ball) {
 }
 
 function _breakBrick(ball, brick) {
-  brick.kill();
+  brick.destruct();
   brickCount--;
   if (brickCount <= 0) {
     _winGame();
@@ -249,3 +250,24 @@ var Brick = function(game, x, y, image) {
 };
 Brick.prototype = Object.create(Phaser.Sprite.prototype);
 Brick.prototype.constructor = Brick;
+
+Brick.prototype.destruct = function() {
+  this.events.onKilled.addOnce(this._onKillHandler, this);
+  this.kill();
+};
+
+Brick.prototype._onKillHandler = function() {
+  var emitter = this.game.add.emitter(0, 0, 100);
+  emitter.makeParticles('brick-dust');
+  emitter.x = this.x + this.width * 0.5;
+  emitter.y = this.y + this.height * 0.5;
+  emitter.minParticleSpeed.setTo(-50 * SCALE, -50 * SCALE);
+  emitter.maxParticleSpeed.setTo(50 * SCALE, 50 * SCALE);
+  emitter.minParticleScale = 1 * SCALE;
+  emitter.maxParticleScale = 1.5 * SCALE;
+  emitter.start(true, 300, null, 10);
+
+  this.game.time.events.add(2000,function() {
+    emitter.destroy();
+  });
+};
