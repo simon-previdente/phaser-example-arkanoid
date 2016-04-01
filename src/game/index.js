@@ -156,7 +156,8 @@ function _createBricks() {
   // Create bricks
   for (var i = 0; i < nbColumnBrick; i++) {
     for (var j = 0; j < nbRowBrick; j++) {
-      var brick = _createOneBrick(
+      var brick = new Brick(
+        game,
         (widthBrick * SCALE * i) + Math.floor(deltaWidth * SCALE * 0.5),
         heightBrick * SCALE * j,
         brickImage);
@@ -165,14 +166,6 @@ function _createBricks() {
   }
   brickCount = nbColumnBrick * nbRowBrick;
   return bricks;
-}
-
-function _createOneBrick(x, y, image) {
-  var brick = game.add.sprite(x, y, image);
-  brick.scale.set(SCALE);
-  game.physics.enable(brick, Phaser.Physics.ARCADE);
-  brick.body.immovable = true;
-  return brick;
 }
 
 function _reflect(bar, ball) {
@@ -245,3 +238,14 @@ function _winGame() {
   message.text = 'You win';
 }
 
+/***************************************************/
+/********************** Brick **********************/
+/***************************************************/
+var Brick = function(game, x, y, image) {
+  Phaser.Sprite.call(this, game, x, y, 'brick');
+  this.scale.set(SCALE);
+  this.game.physics.enable(this, Phaser.Physics.ARCADE);
+  this.body.immovable = true;
+};
+Brick.prototype = Object.create(Phaser.Sprite.prototype);
+Brick.prototype.constructor = Brick;
