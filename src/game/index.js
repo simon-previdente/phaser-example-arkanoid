@@ -47,6 +47,8 @@ function _create() {
   _resetLevel();
 
   cursor = game.input.keyboard.createCursorKeys();
+
+  game.paused = true;
 }
 
 function _update() {
