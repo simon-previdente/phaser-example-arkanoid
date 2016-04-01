@@ -28,6 +28,8 @@ var ballSpeed = 180;
 var bar = null;
 var barSpeed = 200;
 
+var spaceKey;
+
 function _preload() {
   // console.log('💤 Preload game');
   game.load.image('ball', 'game/assets/ball.png');
@@ -49,6 +51,10 @@ function _create() {
   cursor = game.input.keyboard.createCursorKeys();
 
   game.paused = true;
+  spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  spaceKey.onDown.add(function() {
+    game.paused = !game.paused;
+  }, this);
 }
 
 function _update() {
