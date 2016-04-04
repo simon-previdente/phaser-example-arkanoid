@@ -23,6 +23,9 @@ var game = new Phaser.Game(
   false
 );
 
+var ball = null;
+var ballSpeed = 180;
+
 function _preload() {
   // console.log('💤 Preload game');
   game.load.image('ball','game/assets/ball.png');
@@ -33,10 +36,23 @@ function _create() {
 
   game.stage.backgroundColor = '#363343';
 
-  var ball = game.add.sprite(400, 200, 'ball');
-  ball.scale.set(SCALE);
+  ball = _createBall(400, 200);
 }
 
 function _update() {
   // console.log('🔄 Update game');
+}
+
+function _createBall(x, y) {
+  var ball = game.add.sprite(x, y, 'ball');
+  ball.scale.set(SCALE);
+  game.physics.enable(ball, Phaser.Physics.ARCADE);
+  ball.body.collideWorldBounds = true;
+  ball.body.bounce.set(1);
+  var angle = 0;
+  ball.body.velocity.setTo(
+    Math.cos(angle) * ballSpeed,
+    Math.sin(angle) * ballSpeed
+  );
+  return ball;
 }
