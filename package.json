@@ -21,12 +21,27 @@
     }
   ],
   "license": "GPL-3.0",
+  "browser": {
+    "phaser": "./node_modules/phaser/dist/phaser.js"
+  },
+  "browserify-shim": {
+    "phaser": {
+      "exports": "Phaser"
+    }
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
   "dependencies": {
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "phaser": "^2.4.6"
   },
   "devDependencies": {
     "browser-sync": "^2.11.1",
     "browserify": "^11.1.0",
+    "browserify-shim": "^3.8.12",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-plumber": "^1.0.1",
