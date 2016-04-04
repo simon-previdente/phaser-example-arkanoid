@@ -4,9 +4,9 @@ var SCALE = 3;
 
 var game = new Phaser.Game(
   // Game width
-  224 * SCALE,
+  120 * SCALE,
   // Game height
-  192 * SCALE,
+  60 * SCALE,
   // Game renderer (WebGL, Canvas, auto)
   Phaser.AUTO,
   // Game id in index.html
@@ -28,6 +28,8 @@ var ballSpeed = 180;
 var bar = null;
 var barSpeed = 200;
 
+var spaceKey;
+
 function _preload() {
   // console.log('💤 Preload game');
   game.load.image('ball', 'game/assets/ball.png');
@@ -40,11 +42,19 @@ function _create() {
 
   game.stage.backgroundColor = '#363343';
 
-  ball = _createBall(400, 420);
-  bar = _createBar(100, 400);
+  ball = _createBall(0, 0);
+  bar = _createBar(0, 0);
   bricks = _createBricks();
 
+  _resetLevel();
+
   cursor = game.input.keyboard.createCursorKeys();
+
+  game.paused = true;
+  spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  spaceKey.onDown.add(function() {
+    game.paused = !game.paused;
+  }, this);
 }
 
 function _update() {
@@ -58,6 +68,15 @@ function _update() {
 
   game.physics.arcade.collide(bar, ball, null, _reflect, this);
   game.physics.arcade.collide(ball, bricks, null, _breakBrick, this);
+}
+
+function _resetLevel() {
+  // Reset bar
+  bar.x = (game.world.width - bar.width) * 0.5;
+  bar.y = game.world.height - bar.height - 10;
+  // Reset ball
+  ball.y = bar.y - ball.height;
+  ball.x = bar.x + (bar.width - ball.width) * 0.5;
 }
 
 function _createBall(x, y) {
@@ -88,10 +107,15 @@ function _createBricks() {
   var brickImage = 'brick';
   var widthBrick = game.cache.getImage(brickImage).width;
   var heightBrick = game.cache.getImage(brickImage).height;
-  for (var i = 0; i < 10; i++) {
-    for (var j = 0; j < 6; j++) {
+  // Calculate columns and rows
+  var nbColumnBrick = Math.floor(game.world.width / SCALE / widthBrick);
+  var nbRowBrick = Math.floor(game.height / SCALE / heightBrick / 3);
+  var deltaWidth = game.world.width / SCALE - (nbColumnBrick * widthBrick);
+  // Create bricks
+  for (var i = 0; i < nbColumnBrick; i++) {
+    for (var j = 0; j < nbRowBrick; j++) {
       var brick = _createOneBrick(
-        widthBrick * SCALE * i,
+        (widthBrick * SCALE * i) + Math.floor(deltaWidth * SCALE * 0.5),
         heightBrick * SCALE * j,
         brickImage);
       bricks.add(brick);
