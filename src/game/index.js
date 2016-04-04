@@ -30,8 +30,9 @@ var barSpeed = 200;
 
 function _preload() {
   // console.log('💤 Preload game');
-  game.load.image('ball','game/assets/ball.png');
-  game.load.image('bar','game/assets/bar.png');
+  game.load.image('ball', 'game/assets/ball.png');
+  game.load.image('bar', 'game/assets/bar.png');
+  game.load.image('brick', 'game/assets/brick01.png');
 }
 
 function _create() {
@@ -39,8 +40,9 @@ function _create() {
 
   game.stage.backgroundColor = '#363343';
 
-  ball = _createBall(400, 200);
+  ball = _createBall(400, 420);
   bar = _createBar(100, 400);
+  bricks = _createBricks();
 
   cursor = game.input.keyboard.createCursorKeys();
 }
@@ -55,6 +57,7 @@ function _update() {
   }
 
   game.physics.arcade.collide(bar, ball, null, _reflect, this);
+  game.physics.arcade.collide(ball, bricks, null, _breakBrick, this);
 }
 
 function _createBall(x, y) {
@@ -72,12 +75,37 @@ function _createBall(x, y) {
 }
 
 function _createBar(x, y) {
-  var bar = game.add.sprite(x, y,'bar');
+  var bar = game.add.sprite(x, y, 'bar');
   bar.scale.set(SCALE);
   game.physics.enable(bar, Phaser.Physics.ARCADE);
   bar.body.collideWorldBounds = true;
   bar.body.immovable = true;
   return bar;
+}
+
+function _createBricks() {
+  var bricks = game.add.group();
+  var brickImage = 'brick';
+  var widthBrick = game.cache.getImage(brickImage).width;
+  var heightBrick = game.cache.getImage(brickImage).height;
+  for (var i = 0; i < 10; i++) {
+    for (var j = 0; j < 6; j++) {
+      var brick = _createOneBrick(
+        widthBrick * SCALE * i,
+        heightBrick * SCALE * j,
+        brickImage);
+      bricks.add(brick);
+    }
+  }
+  return bricks;
+}
+
+function _createOneBrick(x, y, image) {
+  var brick = game.add.sprite(x, y, image);
+  brick.scale.set(SCALE);
+  game.physics.enable(brick, Phaser.Physics.ARCADE);
+  brick.body.immovable = true;
+  return brick;
 }
 
 function _reflect(bar, ball) {
@@ -94,4 +122,9 @@ function _reflect(bar, ball) {
     );
     return false;
   }
+}
+
+function _breakBrick(ball, brick) {
+  brick.kill();
+  return true;
 }
