@@ -49,6 +49,8 @@ var brickCount;
 
 var spaceKey;
 
+var gamepad1 = null;
+
 var message = null;
 var style = {
   font: '32px Cookie',
@@ -80,6 +82,9 @@ function _create() {
 
   cursor = game.input.keyboard.createCursorKeys();
 
+  game.input.gamepad.start();
+  gamepad1 = game.input.gamepad.pad1;
+
   spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   spaceKey.onDown.add(_eventSpaceKey, this);
 }
@@ -91,6 +96,15 @@ function _update() {
   }
 
   bar.body.velocity.x = 0;
+
+  var mainAxis = gamepad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X);
+  if (gamepad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || mainAxis < -0.1) {
+    bar.body.velocity.x = - barSpeed * SCALE;
+  }
+  else if (gamepad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || mainAxis > 0.1) {
+    bar.body.velocity.x = barSpeed * SCALE;
+  }
+
   if (cursor.left.isDown) {
     bar.body.velocity.x = - barSpeed * SCALE;
   } else if (cursor.right.isDown) {
