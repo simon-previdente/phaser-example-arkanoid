@@ -63,12 +63,16 @@ function _preload() {
   game.load.image('brick-dust','game/assets/brick-dust01.png');
   //  Load the Google WebFont Loader script
   game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+  // Load sounds
+  game.load.audio('sound', 'game/assets/sounds/sound1.ogg');
 }
 
 function _create() {
   // console.log('✨ Create game');
 
   game.stage.backgroundColor = '#363343';
+
+  sound = game.add.audio('sound');
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
   game.physics.arcade.checkCollision.down = false;
@@ -187,6 +191,7 @@ function _reflect(bar, ball) {
 
 function _breakBrick(ball, brick) {
   brick.destruct();
+  sound.play();
   brickCount--;
   if (brickCount <= 0) {
     _winGame();
