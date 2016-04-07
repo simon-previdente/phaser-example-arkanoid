@@ -60,6 +60,7 @@ function _preload() {
   game.load.image('ball', 'game/assets/ball.png');
   game.load.image('bar', 'game/assets/bar.png');
   game.load.image('brick', 'game/assets/brick01.png');
+  game.load.image('brick-dust','game/assets/brick-dust01.png');
   //  Load the Google WebFont Loader script
   game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 }
@@ -156,7 +157,8 @@ function _createBricks() {
   // Create bricks
   for (var i = 0; i < nbColumnBrick; i++) {
     for (var j = 0; j < nbRowBrick; j++) {
-      var brick = _createOneBrick(
+      var brick = new Brick(
+        game,
         (widthBrick * SCALE * i) + Math.floor(deltaWidth * SCALE * 0.5),
         heightBrick * SCALE * j,
         brickImage);
@@ -165,14 +167,6 @@ function _createBricks() {
   }
   brickCount = nbColumnBrick * nbRowBrick;
   return bricks;
-}
-
-function _createOneBrick(x, y, image) {
-  var brick = game.add.sprite(x, y, image);
-  brick.scale.set(SCALE);
-  game.physics.enable(brick, Phaser.Physics.ARCADE);
-  brick.body.immovable = true;
-  return brick;
 }
 
 function _reflect(bar, ball) {
@@ -192,7 +186,7 @@ function _reflect(bar, ball) {
 }
 
 function _breakBrick(ball, brick) {
-  brick.kill();
+  brick.destruct();
   brickCount--;
   if (brickCount <= 0) {
     _winGame();
@@ -245,3 +239,35 @@ function _winGame() {
   message.text = 'You win';
 }
 
+/***************************************************/
+/********************** Brick **********************/
+/***************************************************/
+var Brick = function(game, x, y, image) {
+  Phaser.Sprite.call(this, game, x, y, 'brick');
+  this.scale.set(SCALE);
+  this.game.physics.enable(this, Phaser.Physics.ARCADE);
+  this.body.immovable = true;
+};
+Brick.prototype = Object.create(Phaser.Sprite.prototype);
+Brick.prototype.constructor = Brick;
+
+Brick.prototype.destruct = function() {
+  this.events.onKilled.addOnce(this._onKillHandler, this);
+  this.kill();
+};
+
+Brick.prototype._onKillHandler = function() {
+  var emitter = this.game.add.emitter(0, 0, 100);
+  emitter.makeParticles('brick-dust');
+  emitter.x = this.x + this.width * 0.5;
+  emitter.y = this.y + this.height * 0.5;
+  emitter.minParticleSpeed.setTo(-50 * SCALE, -50 * SCALE);
+  emitter.maxParticleSpeed.setTo(50 * SCALE, 50 * SCALE);
+  emitter.minParticleScale = 1 * SCALE;
+  emitter.maxParticleScale = 1.5 * SCALE;
+  emitter.start(true, 300, null, 10);
+
+  this.game.time.events.add(2000,function() {
+    emitter.destroy();
+  });
+};
