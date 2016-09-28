@@ -1,4 +1,8 @@
 
+
+# Optional app cache directory
+.tmp/
+
 # Created by https://www.gitignore.io/api/node
 
 ### Node ###
