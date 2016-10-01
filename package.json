@@ -22,7 +22,7 @@
   ],
   "license": "GPL-3.0",
   "browser": {
-    "phaser": "./node_modules/phaser/dist/phaser.js"
+    "phaser": "./node_modules/phaser/build/phaser.js"
   },
   "browserify-shim": {
     "phaser": {
